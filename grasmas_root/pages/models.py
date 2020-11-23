@@ -1,11 +1,12 @@
 from django.db import models
 
 
-class Page(models.Model):
-    title = models.CharField(max_length=60)
-    permalink = models.CharField(max_length=12,unique=True)
-    update_date = models.DateTimeField('Last Updated')
-    bodytext = models.TextField('Page Content', blank=True)
+class Gift(models.Model):
+    giver = models.CharField(max_length=10)
+    title = models.CharField(max_length=12)
+    desc = models.CharField(max_length=120)
+    recvr = models.CharField(max_length=12, blank=True)
+    author = models.CharField(max_length=12)
 
-    def __str__(self):
-        return self.title
+    # def __str__(self):
+    #     return self.title
