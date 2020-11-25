@@ -5,26 +5,21 @@
 {% endblock title %}
 
 {% block grid %}
-<div class="grid">
 <table style="width:100%">
     <tr>
-      <th>"G"</th>
-      <th>"R"</th>
-      <th>"A"</th>
-      <th>"S"</th>
-      <th>"M"</th>
+      <th> </th>
+      <th>G</th>
+      <th>R</th>
+      <th>A</th>
+      <th>S</th>
+      <th>M</th>
     </tr>
+    {% for row in rows %}
     <tr>
-    {% for gift in gift_list %}
-      <td>{{ gift.title }}</td>
-      {% if forloop.counter|divisibleby:5 %}
-    </tr>
-    <tr>
-      {% endif %}
-      {% if forloop.last %}
-  </tr>
-      {% endif %}
+    {% for gift in row %}
+      <td>{{ gift }}</td>
     {% endfor gift %}
-{% endblock grid %}
+    </tr>
+    {% endfor rows %}
 </table>
-</div>
+{% endblock grid %}
