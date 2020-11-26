@@ -21,7 +21,11 @@
     <tr>
     {% for gift in row %}
       <td>
-          <a href="{{ "/show_gift" }}">{{ gift.0 }}</a>
+        {% if gift.0 %}
+          <a href="{{ 'show_gift' }}">{{ gift.1 }}</a>
+        {% else %}
+          <strong>{{ gift.1 }}</strong>
+        {% endif %}
       </td>
     {% endfor gift %}
     </tr>

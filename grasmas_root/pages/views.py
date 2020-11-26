@@ -6,6 +6,7 @@ gift_display = []
 gift_array = []
 msgs = []
 players = []
+curr_player = 0
 
 
 def index(request):
@@ -58,10 +59,10 @@ def start(request):
     # store the data for the gift
     gift_array = [["" for _ in range(cols + 1)] for _ in range(rows)]
     # display the status of the gift
-    gift_display = [["" for _ in range(cols + 1)] for _ in range(rows)]
+    gift_display = [[[0, ""] for _ in range(cols + 1)] for _ in range(rows)]
     # add the row numbers
     for i in range(rows):
-        gift_display[i][0] = i + 1
+        gift_display[i][0] = [0, i + 1]
     # pull the gifts from the database
     gift_list = Gift.objects.all()
 #    gl_size = len(gift_list)
@@ -71,14 +72,14 @@ def start(request):
     for gift_data in gift_list:
         r = randrange(rows)
         c = randrange(cols) + 1
-        while gift_display[r][c] != "":
+        while gift_display[r][c][1] != "":
             r = randrange(rows)
             c = randrange(cols) + 1
-        gift_display[r][c] = ["wrapped gift", r + 1, column[c]]
+        gift_display[r][c] = [1, "wrapped gift", r + 1, column[c]]
         gift_array[r][c] = gift_data
         players.append(gift_data.giver)
     shuffle(players)
-    msgs = ["{} goes first!!".format(players[0]), "Which wrapped gift do you choose?"]
+    msgs = ["{} goes first!!".format(players[curr_player]), "Which wrapped gift do you choose?"]
     context = {
         'rows': gift_display,
         'msgs': msgs,
@@ -86,20 +87,7 @@ def start(request):
     return render(request, 'pages/page.html', context)
 
 
-def run_game(request):
-    # for gift in gift_list:
-    #     gg = gift.giver
-    #     gt = gift.title
-    #     gd = gift.desc
-    #     gr = gift.recvr
-    #     ga = gift.author
-    #     assert False
-
-    pass
-
-
 def show_gift(request):
-    assert False
     # for gift in gift_list:
     #     gg = gift.giver
     #     gt = gift.title
@@ -107,5 +95,8 @@ def show_gift(request):
     #     gr = gift.recvr
     #     ga = gift.author
     #     assert False
-
-    pass
+    context = {
+        'rows': gift_display,
+        'msgs': msgs,
+    }
+    return render(request, 'pages/gift.html', context)
