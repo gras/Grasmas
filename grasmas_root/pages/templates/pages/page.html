@@ -5,6 +5,9 @@
 {% endblock title %}
 
 {% block grid %}
+    {% for msg in msgs %}
+        <p>{{ msg }}</p>
+    {% endfor msg %}
 <table style="width:100%">
     <tr>
       <th> </th>
@@ -12,14 +15,16 @@
       <th>R</th>
       <th>A</th>
       <th>S</th>
-      <th>M</th>
+      <th>Mas</th>
     </tr>
     {% for row in rows %}
     <tr>
     {% for gift in row %}
-      <td>{{ gift }}</td>
+      <td>
+          <a href="{{ "/show_gift" }}">{{ gift.0 }}</a>
+      </td>
     {% endfor gift %}
     </tr>
-    {% endfor rows %}
+    {% endfor row %}
 </table>
 {% endblock grid %}

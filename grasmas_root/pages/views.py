@@ -1,6 +1,12 @@
 from django.shortcuts import render
 from . models import Gift
 
+# global variables
+gift_display = []
+gift_array = []
+msgs = []
+players = []
+
 
 def index(request):
     # gift_list = Gift.objects.all()
@@ -44,43 +50,43 @@ def populate(request):
     return render(request, 'pages/page.html', context)
 
 
-def showgrid(request):
-    rows = create_grid(Gift.objects.all())
+def start(request):
+    from random import randrange, shuffle
+    global gift_array, gift_display, msgs, players
+    cols = 5
+    rows = 5
+    # store the data for the gift
+    gift_array = [["" for _ in range(cols + 1)] for _ in range(rows)]
+    # display the status of the gift
+    gift_display = [["" for _ in range(cols + 1)] for _ in range(rows)]
+    # add the row numbers
+    for i in range(rows):
+        gift_display[i][0] = i + 1
+    # pull the gifts from the database
+    gift_list = Gift.objects.all()
+#    gl_size = len(gift_list)
+#    msgs = ["{} gifts are loaded".format(gl_size)]
+    players = []
+    column = [' ', 'G', 'R', 'A', 'S', 'M']
+    for gift_data in gift_list:
+        r = randrange(rows)
+        c = randrange(cols) + 1
+        while gift_display[r][c] != "":
+            r = randrange(rows)
+            c = randrange(cols) + 1
+        gift_display[r][c] = ["wrapped gift", r + 1, column[c]]
+        gift_array[r][c] = gift_data
+        players.append(gift_data.giver)
+    shuffle(players)
+    msgs = ["{} goes first!!".format(players[0]), "Which wrapped gift do you choose?"]
     context = {
-        'rows': rows,
+        'rows': gift_display,
+        'msgs': msgs,
     }
-    #     'gift_list': Gift.objects.all(),
-    # }
-    # assert False
     return render(request, 'pages/page.html', context)
 
 
-def create_grid(gift_list):
-    from random import randrange
-    cols = 6
-    rows = 5
-    # gift_display = [["" for i in range(cols)] for j in range(rows)]
-    gift_array = [["" for i in range(cols)] for j in range(rows)]
-    # add the row numbers
-    for i in range(rows):
-        gift_array[i][0] = i + 1
-    gift_list = Gift.objects.all()
-    gl_size = len(gift_list)
-    for g in gift_list:
-        r = randrange(5)
-        c = randrange(5) + 1
-        while gift_array[r][c] != "":
-            r = randrange(5)
-            c = randrange(5) + 1
-        gift_array[r][c] = "wrapped gift"
-
-    # row1 = ['1', 'toyG1', 'toyR1', 'toyA1', 'toyS1', 'toyM1']
-    # row2 = ['2', 'toyG2', 'toyR2', 'toyA2', 'toyS2', 'toyM2']
-    # row3 = ['3', 'toyG3', 'toyR3', 'toyA3', 'toyS3', 'toyM3']
-    # row4 = ['4', 'toyG4', 'toyR4', 'toyA4', 'toyS4', 'toyM4']
-    # row5 = ['5', 'toyG5', 'toyR5', 'toyA5', 'toyS5', 'toyM5']
-    # rows = [row1, row2, row3, row4, row5]
-    # gift_list = Gift.objects.all()
+def run_game(request):
     # for gift in gift_list:
     #     gg = gift.giver
     #     gt = gift.title
@@ -88,6 +94,18 @@ def create_grid(gift_list):
     #     gr = gift.recvr
     #     ga = gift.author
     #     assert False
-    return gift_array
+
+    pass
 
 
+def show_gift(request):
+    assert False
+    # for gift in gift_list:
+    #     gg = gift.giver
+    #     gt = gift.title
+    #     gd = gift.desc
+    #     gr = gift.recvr
+    #     ga = gift.author
+    #     assert False
+
+    pass
