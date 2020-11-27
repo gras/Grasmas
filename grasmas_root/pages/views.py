@@ -3,7 +3,7 @@ from . models import Gift
 
 # global variables
 gift_display = []
-gift_array = []
+gifts = []
 msgs = []
 players = []
 curr_player = 0
@@ -25,8 +25,8 @@ def index(request):
 
 
 def populate(request):
-    gifts = Gift.objects.all()
-    gifts.delete()
+    # get rid of the old data
+    Gift.objects.all().delete()
 
     Gift(giver='Jon', title='Pony', desc='A lovely little pony with a sparkly tail!', author='Fred').save()
     Gift(giver='Maria', title='Pony1', desc='A lovely little pony with a sparkly tail!', author='Fred').save()
@@ -53,37 +53,68 @@ def populate(request):
 
 def start(request):
     from random import randrange, shuffle
-    global gift_array, gift_display, msgs, players
-    cols = 5
-    rows = 5
-    # store the data for the gift
-    gift_array = [["" for _ in range(cols + 1)] for _ in range(rows)]
-    # display the status of the gift
-    gift_display = [[[0, ""] for _ in range(cols + 1)] for _ in range(rows)]
+
+    # size of the grid
+    cols = 6
+    rows = 6
+
+    # gifts is a dictionary where the key is the location on the board (i.e.'G1')
+    # the value is another dictionary containing: giver, title, desc, owner
+    global gifts
+    gifts = {}
+
+    # gift_display is the data behind the display board
+    # it is a list of lists (for row, col) containing a list of
+    global gift_display
+    gift_display = [[{} for _ in range(cols)] for _ in range(rows)]
     # add the row numbers
     for i in range(rows):
-        gift_display[i][0] = [0, i + 1]
+        gift_display[i][0] = {"desc": i}
+    # add the column headers
+    columns = [' ', 'G', 'R', 'A', 'S', 'M']
+    for i, c in enumerate(columns):
+        gift_display[0][i] = {"desc": c}
+
+    # msgs is a list of messages for the users, displayed above the grid
+    global msgs
+
+    # players is the list of players
+    global players
+    players = []
+
     # pull the gifts from the database
     gift_list = Gift.objects.all()
 #    gl_size = len(gift_list)
 #    msgs = ["{} gifts are loaded".format(gl_size)]
-    players = []
-    column = [' ', 'G', 'R', 'A', 'S', 'M']
+
+    # randomly place the gifts in the grid
     for gift_data in gift_list:
-        r = randrange(rows)
-        c = randrange(cols) + 1
-        while gift_display[r][c][1] != "":
-            r = randrange(rows)
-            c = randrange(cols) + 1
-        gift_display[r][c] = [1, "wrapped gift", r + 1, column[c]]
-        gift_array[r][c] = gift_data
+        r = randrange(rows - 1) + 1
+        c = randrange(cols - 1) + 1
+        while gift_display[r][c] != {}:
+            r = randrange(rows - 1) + 1
+            c = randrange(cols - 1) + 1
+
+        # gift_loc is a string location as a pair of characters (i.e. "M4")
+        gift_loc = "{}{}".format(columns[c], r)
+
+        # gift_url is the url that takes us to the unveiling of the gift
+        gift_url = "show_gift/" + gift_loc
+
+        # put the url into the grid
+        gift_display[r][c] = {"desc": "wrapped gift", "url": gift_url}
+        # add each gift to the gifts dictionary
+        gifts[gift_loc] = {"giver": gift_data.giver, "title": gift_data.title, "desc": gift_data.desc}
+        # add each player to the players list
         players.append(gift_data.giver)
+
     shuffle(players)
     msgs = ["{} goes first!!".format(players[curr_player]), "Which wrapped gift do you choose?"]
     context = {
         'rows': gift_display,
         'msgs': msgs,
     }
+    # assert False
     return render(request, 'pages/page.html', context)
 
 

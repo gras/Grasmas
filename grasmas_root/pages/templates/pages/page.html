@@ -9,22 +9,14 @@
         <p>{{ msg }}</p>
     {% endfor msg %}
 <table style="width:100%">
-    <tr>
-      <th> </th>
-      <th>G</th>
-      <th>R</th>
-      <th>A</th>
-      <th>S</th>
-      <th>Mas</th>
-    </tr>
     {% for row in rows %}
     <tr>
     {% for gift in row %}
       <td>
-        {% if gift.0 %}
-          <a href="{{ 'show_gift' }}">{{ gift.1 }}</a>
+        {% if gift.url %}
+          <a href="{{ gift.url }}">{{ gift.desc }}</a>
         {% else %}
-          <strong>{{ gift.1 }}</strong>
+          <strong>{{ gift.desc }}</strong>
         {% endif %}
       </td>
     {% endfor gift %}
