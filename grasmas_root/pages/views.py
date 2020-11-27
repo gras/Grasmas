@@ -24,6 +24,7 @@ def index(request):
     return render(request, 'pages/page.html', context)
 
 
+# run this once to put fake data into the database for testing
 def populate(request):
     # get rid of the old data
     Gift.objects.all().delete()
