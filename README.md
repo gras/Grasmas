@@ -24,5 +24,6 @@ python manage.py runserver
 ```
 and then go to
 `localhost:8000/populate`
+followed by `localhost:8000/start`
 
 
