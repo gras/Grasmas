@@ -7,10 +7,6 @@ from . models import Gift
 # it is a list of lists (for row, col) containing a list of
 gift_display = []
 
-# gifts is a dictionary where the key is the location on the board (i.e.'G1')
-# the value is another dictionary containing: giver, title, desc, owner
-gifts = {}
-
 # players is the list of players
 players = []
 
@@ -72,26 +68,23 @@ def populate(request):
 def start(request):
     from random import randrange, shuffle
 
-    global gifts, gift_display, players, curr_player, next_player
+    global gift_display, players, curr_player, next_player
 
     # size of the grid
     cols = 6
     rows = 6
-    gifts = {}
     gift_display = [[{} for _ in range(cols)] for _ in range(rows)]
     # add the row numbers
     for i in range(rows):
-        gift_display[i][0] = {"desc": i}
+        gift_display[i][0] = {"display": i}
     # add the column headers
     columns = [' ', 'G', 'R', 'A', 'S', 'M']
     for i, c in enumerate(columns):
-        gift_display[0][i] = {"desc": c}
+        gift_display[0][i] = {"display": c}
     players = []
 
     # pull the gifts from the database
     gift_list = Gift.objects.all()
-#    gl_size = len(gift_list)
-#    msgs = ["{} gifts are loaded".format(gl_size)]
 
     # randomly place the gifts in the grid
     for gift_data in gift_list:
@@ -108,9 +101,13 @@ def start(request):
         gift_url = "present/" + gift_loc
 
         # put the url into the grid
-        gift_display[r][c] = {"title": "wrapped gift", "url": gift_url}
-        # add each gift to the gifts dictionary
-        gifts[gift_loc] = {"giver": gift_data.giver, "title": gift_data.title, "desc": gift_data.desc}
+        gift_display[r][c] = {"display": "wrapped gift",
+                              "url": gift_url,
+                              "giver": gift_data.giver,
+                              "title": gift_data.title,
+                              "desc": gift_data.desc,
+                              "location": gift_loc
+                              }
         # add each player to the players list
         players.append(gift_data.giver)
 
@@ -127,22 +124,24 @@ def start(request):
 
 
 def present(request, position):
-    global gifts, gift_display, players, curr_player, next_player
-    g = gifts[position]
-    new_owner = curr_player
-    if 'owner' in g:
-        old_owner = g["owner"]
-        result = "{} you stole {}'s".format(new_owner, old_owner)
-        curr_player = old_owner
-    else:
-        result = "{} you unwrapped the".format(curr_player)
-        next_player += 1
-        curr_player = players[next_player]
-    gifts[position]['owner'] = new_owner
+    global gift_display, players, curr_player, next_player
 
     c = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
     r = int(position[1])
-    gift_display[r][c] = {"desc": "{}'s {}".format(new_owner, g["title"])}
+
+    g = gift_display[r][c]
+    new_owner = curr_player
+    if 'owner' in g:
+        old_owner = g["owner"]
+        result = "{} stole {}'s".format(new_owner, old_owner)
+        curr_player = old_owner
+    else:
+        result = "{} unwrapped the".format(curr_player)
+        next_player += 1
+        curr_player = players[next_player]
+
+    gift_display[r][c]["owner"] = new_owner
+    gift_display[r][c]["display"] = "{}'s {}".format(new_owner, g["title"])
 
     msgs = []
     context = {
