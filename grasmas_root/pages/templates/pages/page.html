@@ -14,9 +14,9 @@
     {% for gift in row %}
       <td>
         {% if gift.url %}
-          <a href="{{ gift.url }}">{{ gift.desc }}</a>
+          <a href="{{ gift.url }}">{{ gift.display }}</a>
         {% else %}
-          <strong>{{ gift.desc }}</strong>
+          <strong>{{ gift.display }}</strong>
         {% endif %}
       </td>
     {% endfor gift %}
