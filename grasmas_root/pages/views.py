@@ -46,21 +46,36 @@ def populate(request):
     # get rid of the old data
     Gift.objects.all().delete()
 
-    Gift(giver='Jon', title='Shiny Pony', desc='A lovely little pony with a sparkly tail!', author='Fred').save()
-    Gift(giver='Maria', title='Teddy Bear', desc='A soft guy to cuddle', author='Fred').save()
-    Gift(giver='Jim', title='Electric Drill', desc='You need more holes', author='Fred').save()
-    Gift(giver='Lizzie', title='Chain Saw', desc="Don't cut the wrong limb!!", author='Barney').save()
-    Gift(giver='Emma', title='Rocking Chair', desc='A place to put your babies to sleep!', author='Barney').save()
-    Gift(giver='Albert', title='Red Bicycle', desc='It is faster than a rocket!', author='Wilma').save()
-    Gift(giver='Dan', title='Sled', desc='Made by Radio Flyer', author='Wilma').save()
-    Gift(giver='Margee', title='Wagon', desc='Haul all your stuff', author='Betty').save()
-    Gift(giver='Nick', title='Pow-pow-power Wheels', desc='Whatever the hell those are...', author='Betty').save()
-    Gift(giver='Christine', title='American Girl Doll', desc='Looks just like you', author='Bam-Bam').save()
-    Gift(giver='Mark R', title='Barbie', desc="You'll need to get your own Ken", author='Dino').save()
-    Gift(giver='Mark G', title='GI Joe', desc='Dress him like Rambo', author='Dino').save()
-    Gift(giver='Dee', title='Drum Set', desc='Your kids will love it!!  (Ear plugs included)', author='Pebbles').save()
-    Gift(giver='Chuck', title='Skate Board', desc='You too can be a Sk8r Boi', author='Pebbles').save()
-    Gift(giver='Sophie', title='Mario Cart Game', desc='Heavily used but still fun', author='Pebbles').save()
+    Gift(giver='Jon', title='Shiny Pony', desc='A lovely little pony with a sparkly tail!',
+         author='Fred', color="blue").save()
+    Gift(giver='Maria', title='Teddy Bear', desc='A soft guy to cuddle',
+         author='Fred', color="brown").save()
+    Gift(giver='Jim', title='Electric Drill', desc='You need more holes',
+         author='Fred', color="gold").save()
+    Gift(giver='Lizzie', title='Chain Saw', desc="Don't cut the wrong limb!!",
+         author='Barney', color="green").save()
+    Gift(giver='Emma', title='Rocking Chair', desc='A place to put your babies to sleep!',
+         author='Barney', color="grey").save()
+    Gift(giver='Albert', title='Red Bicycle', desc='It is faster than a rocket!',
+         author='Wilma', color="lavender").save()
+    Gift(giver='Dan', title='Sled', desc='Made by Radio Flyer',
+         author='Wilma', color="black").save()
+    Gift(giver='Margee', title='Wagon', desc='Haul all your stuff',
+         author='Betty', color="lime").save()
+    Gift(giver='Nick', title='Pow-pow-power Wheels', desc='Whatever the hell those are...',
+         author='Betty', color="orange").save()
+    Gift(giver='Christine', title='American Girl Doll', desc='Looks just like you',
+         author='Bam-Bam', color="pink").save()
+    Gift(giver='Mark R', title='Barbie', desc="You'll need to get your own Ken",
+         author='Dino', color="purple").save()
+    Gift(giver='Mark G', title='GI Joe', desc='Dress him like Rambo',
+         author='Dino', color="red").save()
+    Gift(giver='Dee', title='Drum Set', desc='Your kids will love it!!  (Ear plugs included)',
+         author='Pebbles', color="turquoise").save()
+    Gift(giver='Chuck', title='Skate Board', desc='You too can be a Sk8r Boi',
+         author='Pebbles', color="white").save()
+    Gift(giver='Sophie', title='Mario Cart Game', desc='Heavily used but still fun',
+         author='Pebbles', color="yellow").save()
 
     # pull the gifts from the database
     gift_list = Gift.objects.all()
