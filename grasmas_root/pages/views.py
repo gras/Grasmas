@@ -10,11 +10,20 @@ gift_display = []
 # players is the list of players
 players = []
 
+# lamp_player is the lucky person to win the lamp
+lamp_player = ''
+
+# last_player is the player that opened the last gift
+last_player = ''
+
 # curr_player is the player selecting a gift
-curr_player = ""
+curr_player = ''
 
 # next_player is the index of player to open the next gift
 next_player = 0
+
+# num_trades keeps track of how many trades occur in one turn
+num_trades = 0
 
 
 def index(request):
@@ -68,7 +77,7 @@ def populate(request):
 def start(request):
     from random import randrange, shuffle
 
-    global gift_display, players, curr_player, next_player
+    global gift_display, players, lamp_player, curr_player, next_player, lamp_player
 
     # size of the grid
     cols = 6
@@ -112,42 +121,70 @@ def start(request):
         players.append(gift_data.giver)
 
     shuffle(players)
+    lamp_player = players[0]
+    shuffle(players)
     next_player = 0
     curr_player = players[0]
     msgs = ["{} goes first!!".format(curr_player), "Which wrapped gift do you choose?"]
     context = {
         'rows': gift_display,
         'msgs': msgs,
+        'players': players,
     }
     # assert False
     return render(request, 'pages/page.html', context)
 
 
 def present(request, position):
-    global gift_display, players, curr_player, next_player
+    global gift_display, players, lamp_player, curr_player, next_player, last_player, num_trades
 
     c = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
     r = int(position[1])
-
     g = gift_display[r][c]
-    new_owner = curr_player
-    if 'owner' in g:
-        old_owner = g["owner"]
-        result = "{} stole {}'s".format(new_owner, old_owner)
-        curr_player = old_owner
-    else:
-        result = "{} unwrapped the".format(curr_player)
-        next_player += 1
-        curr_player = players[next_player]
-
-    gift_display[r][c]["owner"] = new_owner
-    gift_display[r][c]["display"] = "{}'s {}".format(new_owner, g["title"])
 
     msgs = []
+
+    if curr_player == lamp_player:
+        result = "!!! WINNER !!!"
+        g = {'title': "{}".format(curr_player),
+             'desc': 'WON THE LAMP'
+             }
+        lamp_player = ''
+    else:
+        new_owner = curr_player
+        if 'owner' in g:
+            old_owner = g["owner"]
+            if old_owner == last_player:
+                result = "*** ILLEGAL *** {} tried to take back {}'s".format(new_owner, old_owner)
+                curr_player = new_owner
+                new_owner = old_owner
+            else:
+                if num_trades < 6:
+                    result = "{} stole {}'s".format(new_owner, old_owner)
+                    curr_player = old_owner
+                    last_player = new_owner
+                    num_trades += 1
+                else:
+                    result = "!!! JUST STOP !!!  Pick an wrapped gift.  You can't have the"
+                    curr_player = new_owner
+                    new_owner = old_owner
+        else:
+            result = "{} unwrapped the".format(curr_player)
+            next_player += 1
+            num_trades = 0
+            if next_player < len(players):
+                curr_player = players[next_player]
+            else:
+                curr_player = "EndOfRound"
+
+        gift_display[r][c]["owner"] = new_owner
+        gift_display[r][c]["display"] = "{}'s {}".format(new_owner, g["title"])
+
     context = {
         'gift': g,
         'message': result,
         'msgs': msgs,
+        'players': players,
     }
     return render(request, 'pages/gift.html', context)
 
@@ -159,6 +196,7 @@ def board(request):
     context = {
         'rows': gift_display,
         'msgs': msgs,
+        'players': players,
     }
     # assert False
     return render(request, 'pages/page.html', context)
