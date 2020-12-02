@@ -47,35 +47,35 @@ def populate(request):
     Gift.objects.all().delete()
 
     Gift(giver='Jon', title='Shiny Pony', desc='A lovely little pony with a sparkly tail!',
-         author='Fred', color="blue").save()
+         author='Fred', color="blue", image="15").save()
     Gift(giver='Maria', title='Teddy Bear', desc='A soft guy to cuddle',
-         author='Fred', color="brown").save()
+         author='Fred', color="brown", image="6").save()
     Gift(giver='Jim', title='Electric Drill', desc='You need more holes',
-         author='Fred', color="gold").save()
+         author='Fred', color="gold", image="5").save()
     Gift(giver='Lizzie', title='Chain Saw', desc="Don't cut the wrong limb!!",
-         author='Barney', color="green").save()
+         author='Barney', color="green", image="10").save()
     Gift(giver='Emma', title='Rocking Chair', desc='A place to put your babies to sleep!',
-         author='Barney', color="grey").save()
+         author='Barney', color="grey", image="2").save()
     Gift(giver='Albert', title='Red Bicycle', desc='It is faster than a rocket!',
-         author='Wilma', color="lavender").save()
+         author='Wilma', color="lavender", image="3").save()
     Gift(giver='Dan', title='Sled', desc='Made by Radio Flyer',
-         author='Wilma', color="black").save()
+         author='Wilma', color="black", image="12").save()
     Gift(giver='Margee', title='Wagon', desc='Haul all your stuff',
-         author='Betty', color="lime").save()
+         author='Betty', color="lime", image="7").save()
     Gift(giver='Nick', title='Pow-pow-power Wheels', desc='Whatever the hell those are...',
-         author='Betty', color="orange").save()
+         author='Betty', color="orange", image="8").save()
     Gift(giver='Christine', title='American Girl Doll', desc='Looks just like you',
-         author='Bam-Bam', color="pink").save()
+         author='Bam-Bam', color="pink", image="9").save()
     Gift(giver='Mark R', title='Barbie', desc="You'll need to get your own Ken",
-         author='Dino', color="purple").save()
+         author='Dino', color="purple", image="1").save()
     Gift(giver='Mark G', title='GI Joe', desc='Dress him like Rambo',
-         author='Dino', color="red").save()
+         author='Dino', color="red", image="11").save()
     Gift(giver='Dee', title='Drum Set', desc='Your kids will love it!!  (Ear plugs included)',
-         author='Pebbles', color="turquoise").save()
+         author='Pebbles', color="turquoise", image="4").save()
     Gift(giver='Chuck', title='Skate Board', desc='You too can be a Sk8r Boi',
-         author='Pebbles', color="white").save()
+         author='Pebbles', color="white", image="13").save()
     Gift(giver='Sophie', title='Mario Cart Game', desc='Heavily used but still fun',
-         author='Pebbles', color="yellow").save()
+         author='Pebbles', color="yellow", image="14").save()
 
     # pull the gifts from the database
     gift_list = Gift.objects.all()
@@ -130,7 +130,9 @@ def start(request):
                               "giver": gift_data.giver,
                               "title": gift_data.title,
                               "desc": gift_data.desc,
-                              "location": gift_loc
+                              "color": gift_data.color,
+                              "image": gift_data.image,
+                              "location": gift_loc,
                               }
         # add each player to the players list
         players.append(gift_data.giver)
@@ -140,7 +142,7 @@ def start(request):
     shuffle(players)
     next_player = 0
     curr_player = players[0]
-    msgs = ["{} goes first!!".format(curr_player), "Which wrapped gift do you choose?"]
+    msgs = ["{} goes first!!  Which wrapped gift do you choose?".format(curr_player)]
     context = {
         'rows': gift_display,
         'msgs': msgs,
@@ -162,7 +164,8 @@ def present(request, position):
     if curr_player == lamp_player:
         result = "!!! WINNER !!!"
         g = {'title': "{}".format(curr_player),
-             'desc': 'WON THE LAMP'
+             'desc': 'WON THE LAMP',
+             'image': 'lamp',
              }
         lamp_player = ''
     else:
@@ -187,6 +190,7 @@ def present(request, position):
             result = "{} unwrapped the".format(curr_player)
             next_player += 1
             num_trades = 0
+            gift_display[r][c]["open"] = True
             if next_player < len(players):
                 curr_player = players[next_player]
             else:
@@ -207,7 +211,7 @@ def present(request, position):
 def board(request):
     global gift_display, curr_player
 
-    msgs = ["{}'s turn ".format(curr_player), "What gift do you choose?"]
+    msgs = ["{}'s turn What gift do you choose?".format(curr_player)]
     context = {
         'rows': gift_display,
         'msgs': msgs,

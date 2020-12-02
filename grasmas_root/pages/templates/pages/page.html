@@ -6,7 +6,7 @@
 
 {% block grid %}
     {% for msg in msgs %}
-        <p>{{ msg }}</p>
+<p><strong>{{ msg }}</strong></p>
     {% endfor msg %}
 <table style="width:100%">
     {% for row in rows %}
@@ -14,7 +14,16 @@
     {% for gift in row %}
       <td>
         {% if gift.url %}
-          <a href="{{ gift.url }}">{{ gift.display }}</a>
+          {% if gift.open %}
+          <div><strong>{{ gift.owner }}'s</strong></div>
+            <a href="{{ gift.url }}">
+              <img src="static/presents/{{ gift.image }}.jpg" alt="{{ gift.display }}" style="width:80px;height:80px;">
+            </a>
+          {% else %}
+            <a href="{{ gift.url }}">
+              <img src="static/boxes/{{ gift.color }}.png" alt="{{ gift.display }}" style="width:100px;height:100px;">
+            </a>
+          {% endif %}
         {% else %}
           <strong>{{ gift.display }}</strong>
         {% endif %}
