@@ -4,7 +4,7 @@
 {{ title }}
 {% endblock title %}
 
-{% block grid %}
+{% block content %}
     {% for msg in msgs %}
         <p>{{ msg }}</p>
     {% endfor msg %}
@@ -13,4 +13,4 @@
     <img src="/static/presents/{{ gift.image }}.jpg" alt="{{ gift.display }}" style="width:600px;height:600px;">
     <h1>{{ gift.desc }}</h1>
     <a href="/board"> Click here to Continue </a>
-{% endblock grid %}
+{% endblock content %}

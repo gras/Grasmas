@@ -1,11 +1,20 @@
 {% load static %}
-<!doctype html>
+
+<style>
+    label, input {
+        display: block;
+    }
+    span.helptext {
+        display: none;
+    }
+</style>
+
 <html>
   <head>
     <meta charset="utf-8">
     <title>
       {% block title %}
-        Untitled Document
+        Grasmas
       {% endblock title %}
     </title>
     <link href="{% static 'main.css' %}" rel="stylesheet" type="text/css">
@@ -17,13 +26,12 @@
         <div id="logo"><img src="{% static 'GrasmasBorder.jpg' %}" alt=""/></div>
       </header>
 
-      <section id="maine">
-      {% block grid %}
+      <section id="main">
+      {% block content %}
         <h1>Welcome!</h1>
         <p>This is the site template</p>
-      {% endblock grid %}
+      {% endblock content %}
       </section>
-      <p>{{ players }}</p>
       <footer id="footer">Copyright &copy; 2020 Grasmas Elves</footer>
     </div>
   </body>

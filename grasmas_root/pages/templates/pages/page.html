@@ -4,7 +4,7 @@
 {{ title }}
 {% endblock title %}
 
-{% block grid %}
+{% block content %}
     {% for msg in msgs %}
 <p><strong>{{ msg }}</strong></p>
     {% endfor msg %}
@@ -32,4 +32,5 @@
     </tr>
     {% endfor row %}
 </table>
-{% endblock grid %}
+<p>{{ players }}</p>
+{% endblock content %}
