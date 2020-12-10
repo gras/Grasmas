@@ -8,7 +8,8 @@ class Gift(models.Model):
     recvr = models.CharField(max_length=12, blank=True)
     author = models.CharField(max_length=12)
     color = models.CharField(max_length=12)
-    image = models.CharField(max_length=12)
+    photo = models.ImageField(upload_to='images/', blank=True)
+    image = models.CharField(max_length=12)  # for testing  ***************
 
-    # def __str__(self):
-    #     return self.title
+    def __str__(self):
+        return self.title

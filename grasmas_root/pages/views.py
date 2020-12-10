@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from . models import Gift
 
 # global variables
@@ -26,30 +27,15 @@ next_player = 0
 num_trades = 0
 
 
-def index(request):
-    # gift_list = Gift.objects.all()
-    # gift = gift_list[0]
-    context = {
-        # 'giver': gift.giver,
-        # 'title': gift.title,
-        # 'title': pg.title,
-        # 'content': pg.bodytext,
-        # 'last_updated': pg.update_date,
-        'gift_list': Gift.objects.all(),
-    }
-    # assert False
-    return render(request, 'pages/page.html', context)
-
-
 # run this once to put fake data into the database for testing
 def populate(request):
     # get rid of the old data
     Gift.objects.all().delete()
 
     Gift(giver='Jon', title='Shiny Pony', desc='A lovely little pony with a sparkly tail!',
-         author='Fred', color="blue", image="15").save()
+         author='Jon', color="blue", image="15").save()
     Gift(giver='Maria', title='Teddy Bear', desc='A soft guy to cuddle',
-         author='Fred', color="brown", image="6").save()
+         author='Jon', color="brown", image="6").save()
     Gift(giver='Jim', title='Electric Drill', desc='You need more holes',
          author='Fred', color="gold", image="5").save()
     Gift(giver='Lizzie', title='Chain Saw', desc="Don't cut the wrong limb!!",
@@ -86,7 +72,7 @@ def populate(request):
         'msgs': msgs,
     }
     # assert False
-    return render(request, 'pages/page.html', context)
+    return render(request, 'page.html', context)
 
 
 def start(request):
@@ -149,7 +135,7 @@ def start(request):
         'players': players,
     }
     # assert False
-    return render(request, 'pages/page.html', context)
+    return render(request, 'page.html', context)
 
 
 def present(request, position):
@@ -205,7 +191,7 @@ def present(request, position):
         'msgs': msgs,
         'players': players,
     }
-    return render(request, 'pages/gift.html', context)
+    return render(request, 'gift.html', context)
 
 
 def board(request):
@@ -218,4 +204,4 @@ def board(request):
         'players': players,
     }
     # assert False
-    return render(request, 'pages/page.html', context)
+    return render(request, 'page.html', context)

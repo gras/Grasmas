@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block content %}
+<h1>Hello, {{ user.username|default:'Guest' }}!</h1>
+<div>
+    {% if user.is_authenticated %}
+    <h2>There are {{ gl_all }} gifts in the database</h2>
+    <h3>You have {{ gl_user }} gifts entered, <a href="{% url 'add' %}">add</a>  a new gift<br></h3>
+
+    <table class="table mb-0">
+    <thead>
+      <tr>
+        <th colspan=4 class="text-center">My Gifts</th>
+      </tr>
+      <tr>
+        <th class="text-center">Person</th>
+        <th class="text-center">Title</th>
+        <th class="text-center">Image</th>
+        <th class="text-center">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for gift in gift_list %}
+      <tr>
+        <td class="text-center">{{ gift.giver }}</td>
+        <td class="text-center">{{ gift.title }}</td>
+        <td class="text-center"><img style="width:100px;height:100px;"
+                                     class="img-responsive"
+                                     src="{{ gift.photo }}">
+        </td>
+        <td class="text-center">
+            <form method="get" action="{% url 'edit' gift.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary btn-sm">Edit</button>
+            </form>
+            <form method="post" action="{% url 'RU_SURE' gift.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+      <p><a href="{% url 'logout' %}">Logout</a></p>
+      <p><a href="{% url 'password_change' %}">Change password</a></p>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+</div>
+{% endblock %}
+

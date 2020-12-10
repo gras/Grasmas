@@ -12,16 +12,24 @@
     {% for row in rows %}
     <tr>
     {% for gift in row %}
-      <td>
+      <td class="text-center">
         {% if gift.url %}
           {% if gift.open %}
           <div><strong>{{ gift.owner }}'s</strong></div>
             <a href="{{ gift.url }}">
-              <img src="static/presents/{{ gift.image }}.jpg" alt="{{ gift.display }}" style="width:80px;height:80px;">
+              <img src="static/presents/{{ gift.image }}.jpg"
+                   alt="{{ gift.display }}"
+                   style="width:80px;height:80px;"
+                   class="img-responsive"
+              >
             </a>
           {% else %}
             <a href="{{ gift.url }}">
-              <img src="static/boxes/{{ gift.color }}.png" alt="{{ gift.display }}" style="width:100px;height:100px;">
+              <img src="static/boxes/{{ gift.color }}.png"
+                   alt="{{ gift.display }}"
+                   style="width:100px;height:100px;"
+                   class="img-responsive"
+              >
             </a>
           {% endif %}
         {% else %}
