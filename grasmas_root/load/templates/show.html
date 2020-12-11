@@ -10,12 +10,12 @@
       <div class="col-sm-9">
         <h2>Hello, {{ user.username|default:'Guest' }}!</h2>
         {% if user.is_authenticated %}
-        <h3>There are {{ gl_all }} gifts in the database</h3>
+        <h3>There are {{ gl_all }} gifts in the database {{ lamp_msg }}</h3>
         <h4>
             You have {{ gl_user }} gifts entered,
             <a href="{% url 'add' %}">add</a>  a new gift
-            {% if lamp_owner %}
-              (<a href="{% url 'lamp' %}">add/edit</a> the LAMP picture)<br>
+            {% if not lamp_owner %}
+              (<a href="{% url 'add_lamp' %}">add</a> the LAMP picture)<br>
             {% endif %}
         </h4>
       </div>

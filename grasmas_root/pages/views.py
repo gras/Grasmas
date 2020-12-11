@@ -1,8 +1,5 @@
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render
 from . models import Gift
-from .forms import LampForm
 
 # global variables
 
@@ -162,25 +159,3 @@ def board(request):
     }
     # assert False
     return render(request, 'page.html', context)
-
-
-def lamp(request):
-    global lamp_URL
-    if request.method == 'POST' and request.FILES['myfile']:
-        print("LAMP POST")
-        form = LampForm(request.POST, request.FILES)
-        if form.is_valid():
-            myfile = request.FILES['myfile']
-            fs = FileSystemStorage()
-            filename = fs.save(myfile.name, myfile)
-            lamp_URL = fs.url(filename)
-            obj = form.cleaned_data
-            print(obj.get('desc'))
-            return redirect('show')
-        else:
-            print("INVALID")
-            return HttpResponse(form.errors)
-    else:
-        print("LAMP ELSE ", request.method)
-        form = LampForm()
-    return render(request, 'lamp.html', {'form': form})

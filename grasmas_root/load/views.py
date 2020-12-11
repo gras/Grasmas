@@ -8,6 +8,10 @@ from django.forms.models import model_to_dict
 
 def get_gift_list(request):
     gift_list = Gift.objects.all()
+    if len(gift_list.filter(title='Lamp')):
+        lamp_msg = "(including the LAMP)"
+    else:
+        lamp_msg = "(but no LAMP yet...)"
     gl_all = len(gift_list)
     gift_list = Gift.objects.filter(author=request.user)
     gl_user = len(gift_list)
@@ -15,13 +19,16 @@ def get_gift_list(request):
         gl_all = 'no'
     if gl_user == 0:
         gl_user = 'no'
+    lamp_in_DB = 1
+    if request.user.username == 'Tio':
+        lamp_in_DB = len(gift_list.filter(title='Lamp'))
     context = {
+        'lamp_msg': lamp_msg,
         'gl_user': gl_user,
         'gl_all': gl_all,
         'gift_list': gift_list,
-        'lamp_owner': request.user.username == 'Tio'
+        'lamp_owner': lamp_in_DB
     }
-    print(context)
     return context
 
 
@@ -31,32 +38,56 @@ def show(request):
 
 
 def add(request):
-    if request.method == 'POST' and request.FILES['myfile']:
-        print("ADD POST")
+    if request.method == 'POST':
         form = GiftForm(request.POST, request.FILES)
         if form.is_valid():
-            myfile = request.FILES['myfile']
-            fs = FileSystemStorage()
-            filename = fs.save(myfile.name, myfile)
             obj = form.save(commit=False)
             obj.author = request.user.username
             obj.color = request.user.last_name
-            obj.photo = fs.url(filename)
+            myfile = request.FILES.get('myfile', False)
+            if myfile:
+                fs = FileSystemStorage()
+                filename = fs.save(myfile.name, myfile)
+                obj.photo = fs.url(filename)
             obj.save()
-            return redirect('show')
+            context = get_gift_list(request)
+            return render(request, 'show.html', context)
         else:
             return HttpResponse(form.errors)
     else:
-        print("ADD ELSE ", request.method)
         form = GiftForm()
+    return render(request, 'add.html', {'form': form})
+
+
+def add_lamp(request):
+    if request.method == 'POST':
+        form = GiftForm(request.POST, request.FILES)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.author = request.user.username
+            obj.color = request.user.last_name
+            myfile = request.FILES.get('myfile', False)
+            if myfile:
+                fs = FileSystemStorage()
+                filename = fs.save(myfile.name, myfile)
+                obj.photo = fs.url(filename)
+            obj.save()
+            context = get_gift_list(request)
+            return render(request, 'show.html', context)
+        else:
+            return HttpResponse(form.errors)
+    else:
+        form = GiftForm(initial={
+            'giver': 'Lamp',
+            'title': 'Lamp',
+            'desc': 'Lamp',
+        })
     return render(request, 'add.html', {'form': form})
 
 
 def edit(request, pk):
     gift = Gift.objects.get(pk=pk)
-    print(request.FILES)
     if request.method == 'POST':
-        print("EDIT POST")
         form = GiftForm(request.POST, request.FILES)
         if form.is_valid():
             obj = form.save(commit=False)
@@ -64,30 +95,19 @@ def edit(request, pk):
             obj.color = request.user.last_name
             obj.pk = pk
             myfile = request.FILES.get('myfile', False)
-            print('***** ', myfile)
-            print('***** ', gift.photo)
             if myfile:
                 fs = FileSystemStorage()
                 filename = fs.save(myfile.name, myfile)
                 obj.photo = fs.url(filename)
-                print('IF   ##### ', obj.photo)
             else:
                 obj.photo = gift.photo
-                print('ELSE ##### ', obj.photo)
             obj.save()
             context = get_gift_list(request)
             return render(request, 'show.html', context)
         else:
-            print("ADD FORM INVALID ")
-            # todo return readable form errors
             return HttpResponse(form.errors)
     else:
-        print("EDIT ELSE ", request.method)
-        # todo add the image to the context and html!
-        # todo add submit button
-        # todo make the upload button work
         form = GiftForm(initial=model_to_dict(gift))
-        print(gift)
         context = {
             'form': form,
             'gift': gift,

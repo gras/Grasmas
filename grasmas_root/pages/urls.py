@@ -5,5 +5,4 @@ urlpatterns = [
     path('start', views.start),
     path('board', views.board),
     path('present/<str:position>', views.present),
-    path('lamp', views.lamp, name='lamp'),
 ]

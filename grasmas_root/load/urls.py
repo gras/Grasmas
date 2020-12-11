@@ -11,6 +11,7 @@ urlpatterns = [
     path('delete/<int:pk>/', delete, name='delete'),
     path('add/', add, name='add'),
     path('show/', show, name='show'),
+    path('add_lamp/', add_lamp, name='add_lamp'),
 ]
 
 if settings.DEBUG:
