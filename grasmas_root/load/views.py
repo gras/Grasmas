@@ -116,12 +116,14 @@ def edit(request, pk):
 
 
 def RU_SURE(request, pk):
-    context = {}
+    context = {'allowed': False}
     if request.method == 'POST':
         gift = Gift.objects.get(pk=pk)
-        context = {
-            'gift': gift,
-        }
+        if request.user.username == gift.author:
+            context = {
+                'allowed': True,
+                'gift': gift,
+            }
     return render(request, 'RU_SURE.html', context)
 
 

@@ -14,3 +14,8 @@
     <h1>{{ gift.desc }}</h1>
     <a href="/board"> Click here to Continue </a>
 {% endblock %}
+
+  {% if user.is_authenticated %}
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    {% endif %}
