@@ -1,7 +1,7 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import GiftForm
+from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
+from .forms import GiftForm
 from pages.models import Gift
 from django.forms.models import model_to_dict
 
@@ -19,7 +19,9 @@ def get_gift_list(request):
         'gl_user': gl_user,
         'gl_all': gl_all,
         'gift_list': gift_list,
+        'lamp_owner': request.user.username == 'Tio'
     }
+    print(context)
     return context
 
 
@@ -94,6 +96,7 @@ def edit(request, pk):
 
 
 def RU_SURE(request, pk):
+    context = {}
     if request.method == 'POST':
         gift = Gift.objects.get(pk=pk)
         context = {

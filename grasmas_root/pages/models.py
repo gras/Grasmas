@@ -9,7 +9,6 @@ class Gift(models.Model):
     author = models.CharField(max_length=12)
     color = models.CharField(max_length=12)
     photo = models.ImageField(upload_to='images/', blank=True)
-    image = models.CharField(max_length=12)  # for testing  ***************
 
     def __str__(self):
         return self.title

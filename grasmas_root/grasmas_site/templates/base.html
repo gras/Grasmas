@@ -18,24 +18,26 @@
 </head>
 
 <body>
-<div class="jumbotron text-center" style="margin-bottom:0">
-  <img src="{% static 'GrasmasBorder.jpg' %}" alt=""/>
+<div class="img-fluid" style="margin-bottom:0">
+  <img src="{% static 'GrasmasBorder.jpg' %}" class="mx-auto d-block" style="width:500px;height:100px;"/>
 </div>
 
-      <section>
-      {% block content %}
+<section>
+    {% block content %}
         <h1>Welcome!</h1>
         <p>This is the site template</p>
-      {% endblock content %}
-      </section>
-      <footer>Copyright &copy; 2020 Grasmas Elves</footer>
-    </div>
+    {% endblock content %}
+</section>
+
+<div class="container bg-dark text-white" style="margin-bottom:0">
+  <p class="text-lg-center">Copyright &copy; 2020 Grasmas Elves</p>
+</div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
   </body>
 </html>

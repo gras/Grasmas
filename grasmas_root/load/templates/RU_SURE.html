@@ -5,10 +5,12 @@
 {% endblock title %}
 
 {% block content %}
+<div class="container-fluid text-center">
     <h2>Are you sure you want to delete this gift?</h2>
     <h1>{{ gift.title }}</h1>
     <img src="{{ gift.photo }}" alt="{{ gift.display }}" style="width:600px;height:600px;">
-    <h1>{{ gift.desc }}</h1>
+    <h2>{{ gift.desc }}</h2>
     <a href="{% url 'show' %}" class="btn btn-primary">Cancel</a>
     <a href="{% url 'delete' gift.pk %}" class="btn btn-danger">DELETE</a>
+</div>
 {% endblock %}

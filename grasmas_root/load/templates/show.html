@@ -5,18 +5,29 @@
 {% endblock title %}
 
 {% block content %}
-<h1>Hello, {{ user.username|default:'Guest' }}!</h1>
-<div>
-    {% if user.is_authenticated %}
-    <h2>There are {{ gl_all }} gifts in the database</h2>
-    <h3>You have {{ gl_user }} gifts entered, <a href="{% url 'add' %}">add</a>  a new gift<br></h3>
+<div class="container border">
+    <div class="row">
+      <div class="col-sm-9">
+        <h2>Hello, {{ user.username|default:'Guest' }}!</h2>
+        {% if user.is_authenticated %}
+        <h3>There are {{ gl_all }} gifts in the database</h3>
+        <h4>
+            You have {{ gl_user }} gifts entered,
+            <a href="{% url 'add' %}">add</a>  a new gift
+            {% if lamp_owner %}
+              (<a href="{% url 'lamp' %}">add/edit</a> the LAMP picture)<br>
+            {% endif %}
+        </h4>
+      </div>
+      <div class="col-sm-3">
+        <b>Your wrapping paper: </b>
+        <img src="/static/boxes/{{ user.last_name }}.png" style="width:100px; height:100px; ">
+      </div>
+    </div>
 
     <table class="table mb-0">
     <thead>
-      <tr>
-        <th colspan=4 class="text-center">My Gifts</th>
-      </tr>
-      <tr>
+      <tr class="container bg-primary text-white">
         <th class="text-center">Person</th>
         <th class="text-center">Title</th>
         <th class="text-center">Image</th>
@@ -26,8 +37,11 @@
     <tbody>
     {% for gift in gift_list %}
       <tr>
-        <td class="text-center">{{ gift.giver }}</td>
-        <td class="text-center">{{ gift.title }}</td>
+          <td class="text-center"><b>{{ gift.giver }}</b></td>
+          <td class="text-center">
+              <p><b>{{ gift.title }}</b></p>
+              <p>{{ gift.desc }}</p>
+        </td>
         <td class="text-center"><img style="width:100px;height:100px;"
                                      class="img-responsive"
                                      src="{{ gift.photo }}">
@@ -46,11 +60,12 @@
     {% endfor %}
     </tbody>
   </table>
-
-      <p><a href="{% url 'logout' %}">Logout</a></p>
-      <p><a href="{% url 'password_change' %}">Change password</a></p>
+     <div class="text-center">
+      <a href="{% url 'password_change' %}" class="btn btn-primary">Change password</a>
+      <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+     </div>
     {% else %}
-      <a href="{% url 'login' %}">Login</a>
+       <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
     {% endif %}
 </div>
 {% endblock %}
