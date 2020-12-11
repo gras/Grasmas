@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block content %}
+
+<h1>Hello, {{ user.username|default:'Guest' }}!</h1>
+<div class="form-group">
+    {% if user.is_authenticated %}
+     <form method = "post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="file" name="myfile">
+        <button type="submit" class="btn btn-primary">Upload</button>
+     </form>
+        {% if url %}
+        <p>File uploaded at: <a href="{{ url }}">{{ url }}</a></p>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    {% endif %}
+</div>
+
+
+
+{% endblock content %}

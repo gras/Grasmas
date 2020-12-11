@@ -1,30 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
 {% load static %}
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>
-      {% block title %}
-        Untitled Document
-      {% endblock title %}
-    </title>
-    <link href="{% static 'main.css' %}" rel="stylesheet" type="text/css">
-  </head>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <body>
-    <div id="wrapper">
-      <header id="header">
-        <div id="logo"><img src="{% static 'GrasmasBorder.jpg' %}" alt=""/></div>
-      </header>
+  <title>
+    {% block title %}
+      Grasmas
+    {% endblock title %}
+  </title>
+</head>
 
-      <section id="maine">
-      {% block grid %}
+<body>
+<div class="img-fluid" style="margin-bottom:0">
+  <img src="{% static 'GrasmasBorder.jpg' %}" class="mx-auto d-block" style="width:500px;height:100px;"/>
+</div>
+
+<section>
+    {% block content %}
         <h1>Welcome!</h1>
         <p>This is the site template</p>
-      {% endblock grid %}
-      </section>
-      <p>{{ players }}</p>
-      <footer id="footer">Copyright &copy; 2020 Grasmas Elves</footer>
-    </div>
+    {% endblock content %}
+</section>
+
+<div class="container bg-dark text-white" style="margin-bottom:0">
+  <p class="text-lg-center">Copyright &copy; 2020 Grasmas Elves</p>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
   </body>
 </html>

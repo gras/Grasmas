@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block content %}
+<div class="col-md-4 offset-md-4">
+  <form method = "post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <img src="{{ gift.photo }}" alt="{{ gift.display }}" style="width:500px;height:500px;">
+        <p>Current file: {{ gift.photo }}</p>
+        <p>
+            <input type="file" name="myfile">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="{% url 'show' %}" class="btn btn-primary">Cancel</a>
+     </p>
+  </form>
+</div>
+{% endblock content %}

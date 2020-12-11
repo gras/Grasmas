@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block content %}
+<div class="container border">
+    <div class="row">
+      <div class="col-sm-9">
+        <h2>Hello, {{ user.username|default:'Guest' }}!</h2>
+        {% if user.is_authenticated %}
+        <h3>There are {{ gl_all }} gifts in the database {{ lamp_msg }}</h3>
+        <h4>
+            You have {{ gl_user }} gifts entered,
+            <a href="{% url 'add' %}">add</a>  a new gift
+            {% if not lamp_owner %}
+              (<a href="{% url 'add_lamp' %}">add</a> the LAMP picture)<br>
+            {% endif %}
+        </h4>
+      </div>
+      <div class="col-sm-3">
+        <b>Your wrapping paper: </b>
+        <img src="/static/boxes/{{ user.last_name }}.png" style="width:100px; height:100px; ">
+      </div>
+    </div>
+
+    <table class="table mb-0">
+    <thead>
+      <tr class="container bg-primary text-white">
+        <th class="text-center">Person</th>
+        <th class="text-center">Title</th>
+        <th class="text-center">Image</th>
+        <th class="text-center">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for gift in gift_list %}
+      <tr>
+          <td class="text-center"><b>{{ gift.giver }}</b></td>
+          <td class="text-center">
+              <p><b>{{ gift.title }}</b></p>
+              <p>{{ gift.desc }}</p>
+        </td>
+        <td class="text-center"><img style="width:100px;height:100px;"
+                                     class="img-responsive"
+                                     src="{{ gift.photo }}">
+        </td>
+        <td class="text-center">
+            <form method="get" action="{% url 'edit' gift.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary btn-sm">Edit</button>
+            </form>
+            <form method="post" action="{% url 'RU_SURE' gift.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+     <div class="text-center">
+      <a href="{% url 'password_change' %}" class="btn btn-primary">Change password</a>
+      <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+     </div>
+    {% else %}
+       <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    {% endif %}
+</div>
+{% endblock %}
+
