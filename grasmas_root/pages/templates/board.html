@@ -7,8 +7,19 @@
 {% block content %}
   {% if user.is_superuser %}
 <div class="row">
-<div class="col-lg-3">
-<p>{{ players }}</p>
+<div class="col-lg-1 text-center">
+</div>
+<div class="col-lg-2 text-left">
+    <p><strong>Player order:</strong></p>
+    <ul>
+    {% for player in players %}
+        {% if player == curr_player %}
+        <li><h3><strong>{{ player }}</strong></h3></li>
+        {% else %}
+        <li><h5>{{ player }}</h5></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
 </div>
 
 <div class="col-lg-6">
@@ -29,7 +40,7 @@
             <a href="/present/{{ gift.location }}">
               <img src={{ gift.photo }}
                    alt="{{ gift.display }}"
-                   style="width:80px;height:80px;"
+                   style="width:150px;height:130px;"
                    class="img-responsive"
               >
             </a>
@@ -42,18 +53,30 @@
               >
             </a>
           {% endif %}
-        {% else %}
+        {% elif gift.display %}
           <h2>{{ gift.display }}</h2>
-        {% endif %}
+          {% else %}
+            <img src="/static/boxes/MT.png"
+                 style="width:150px;height:150px;"
+                 class="img-responsive"
+            >
+          {% endif %}
       </td>
     {% endfor gift %}
     </tr>
     {% endfor row %}
 </table>
 </div>
-</div>
-<div clas="col-lg-3">
 
+<div class="col-lg-3 text-center">
+  {% if lamp_winner %}
+    <h1>{{ lamp_winner }}</h1>
+    <h2>!!! WON THE LAMP !!!</h2>
+    <img src={{ lamp_URL }}
+         alt="Da LAMP"
+         style="width:300px;height:300px;"
+         class="img-responsive">
+    {% endif %}
 </div>
 </div>
     {% else %}

@@ -31,7 +31,6 @@ def status(request):
         g = []
         for gvr in givers:
             g.append(gvr.giver)
-            print(gvr.author, gvr.giver,gvr.title)
         rows.append("{} entered gifts for: {}".format(a, g))
     context['rows'] = rows
     context['errors'] = errors
