@@ -6,6 +6,7 @@
 
 {% block content %}
 <div class="col-md-4 offset-md-4">
+    {% if user.is_authenticated %}
   <form method = "post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
@@ -17,5 +18,10 @@
             <a href="{% url 'show' %}" class="btn btn-primary">Cancel</a>
      </p>
   </form>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    {% endif %}
 </div>
 {% endblock content %}
+
+

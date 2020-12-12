@@ -6,8 +6,8 @@
 
 {% block content %}
 
+<div class="form-group container border">
 <h1>Hello, {{ user.username|default:'Guest' }}!</h1>
-<div class="form-group">
     {% if user.is_authenticated %}
      <form method = "post" enctype="multipart/form-data">
         {% csrf_token %}

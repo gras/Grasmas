@@ -27,3 +27,7 @@
 
 
 {% endblock content %}
+  {% if user.is_authenticated %}
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    {% endif %}

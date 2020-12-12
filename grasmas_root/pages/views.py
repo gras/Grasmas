@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from . models import Gift
 
 # global variables
@@ -48,7 +48,7 @@ def start(request):
     players = []
 
     # pull the gifts from the database
-    gift_list = Gift.objects.all()
+    gift_list = Gift.objects.exclude(giver='Lamp')
 
     # randomly place the gifts in the grid
     for gift_data in gift_list:
@@ -61,17 +61,12 @@ def start(request):
         # gift_loc is a string location as a pair of characters (i.e. "M4")
         gift_loc = "{}{}".format(columns[c], r)
 
-        # gift_url is the url that takes us to the unveiling of the gift
-        gift_url = "present/" + gift_loc
-
-        # put the url into the grid
         gift_display[r][c] = {"display": "wrapped gift",
-                              "url": gift_url,
                               "giver": gift_data.giver,
                               "title": gift_data.title,
                               "desc": gift_data.desc,
                               "color": gift_data.color,
-                              "image": gift_data.image,
+                              "photo": gift_data.photo,
                               "location": gift_loc,
                               }
         # add each player to the players list
@@ -99,8 +94,7 @@ def present(request, position):
     r = int(position[1])
     g = gift_display[r][c]
 
-    msgs = []
-
+    stealing = False
     if curr_player == lamp_player:
         result = "!!! WINNER !!!"
         g = {'title': "{}".format(curr_player),
@@ -114,35 +108,35 @@ def present(request, position):
             old_owner = g["owner"]
             if old_owner == last_player:
                 result = "*** ILLEGAL *** {} tried to take back {}'s".format(new_owner, old_owner)
-                curr_player = new_owner
-                new_owner = old_owner
+                # curr_player = new_owner
+                # new_owner = old_owner
             else:
                 if num_trades < 6:
-                    result = "{} stole {}'s".format(new_owner, old_owner)
-                    curr_player = old_owner
-                    last_player = new_owner
-                    num_trades += 1
+                    result = "Do you want to steal {}'s".format(old_owner)
+                    stealing = True
+                    # curr_player = old_owner
+                    # last_player = new_owner
+                    # num_trades += 1
                 else:
                     result = "!!! JUST STOP !!!  Pick an wrapped gift.  You can't have the"
-                    curr_player = new_owner
-                    new_owner = old_owner
+                    # curr_player = new_owner
+                    # new_owner = old_owner
         else:
             result = "{} unwrapped the".format(curr_player)
             next_player += 1
             num_trades = 0
             gift_display[r][c]["open"] = True
+            gift_display[r][c]["owner"] = curr_player
+            gift_display[r][c]["display"] = "{}'s {}".format(curr_player, g["title"])
             if next_player < len(players):
                 curr_player = players[next_player]
             else:
                 curr_player = "EndOfRound"
 
-        gift_display[r][c]["owner"] = new_owner
-        gift_display[r][c]["display"] = "{}'s {}".format(new_owner, g["title"])
-
     context = {
         'gift': g,
         'message': result,
-        'msgs': msgs,
+        'stealing': stealing,
         'players': players,
     }
     return render(request, 'gift.html', context)
@@ -159,3 +153,23 @@ def board(request):
     }
     # assert False
     return render(request, 'page.html', context)
+
+
+def steal(request, position):
+    global gift_display, curr_player, last_player, num_trades
+
+    c = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
+    r = int(position[1])
+    g = gift_display[r][c]
+
+    new_owner = curr_player
+    curr_player = g["owner"]
+    last_player = new_owner
+    num_trades += 1
+    print("curr_player", curr_player)
+    print("last_player", last_player)
+    print("new_owner", new_owner)
+
+    gift_display[r][c]["owner"] = new_owner
+    gift_display[r][c]["display"] = "{}'s {}".format(new_owner, g["title"])
+    return redirect('board')

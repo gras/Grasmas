@@ -6,6 +6,38 @@ from pages.models import Gift
 from django.forms.models import model_to_dict
 
 
+def status(request):
+    context = get_gift_list(request)
+    gift_list = Gift.objects.all()
+    # check for duplicates
+    giver_seen = set()
+    giver_dups = set()
+    giver_uniq = []
+    author_uniq = set()
+    for g in gift_list:
+        author_uniq.add(g.author)
+        if g.giver not in giver_seen:
+            giver_uniq.append(g.giver)
+            giver_seen.add(g.giver)
+        else:
+            giver_dups.add(g.giver)
+    errors = None
+    if len(giver_dups) > 0:
+        errors = giver_dups
+    # build the display
+    rows = []
+    for a in author_uniq:
+        givers = Gift.objects.filter(author=a)
+        g = []
+        for gvr in givers:
+            g.append(gvr.giver)
+            print(gvr.author, gvr.giver,gvr.title)
+        rows.append("{} entered gifts for: {}".format(a, g))
+    context['rows'] = rows
+    context['errors'] = errors
+    return render(request, 'status.html', context)
+
+
 def get_gift_list(request):
     gift_list = Gift.objects.all()
     if len(gift_list.filter(title='Lamp')):
@@ -20,7 +52,7 @@ def get_gift_list(request):
     if gl_user == 0:
         gl_user = 'no'
     lamp_in_DB = 1
-    if request.user.username == 'Tio':
+    if request.user.username == 'Mark_R':
         lamp_in_DB = len(gift_list.filter(title='Lamp'))
     context = {
         'lamp_msg': lamp_msg,
@@ -116,12 +148,14 @@ def edit(request, pk):
 
 
 def RU_SURE(request, pk):
-    context = {}
+    context = {'allowed': False}
     if request.method == 'POST':
         gift = Gift.objects.get(pk=pk)
-        context = {
-            'gift': gift,
-        }
+        if request.user.username == gift.author:
+            context = {
+                'allowed': True,
+                'gift': gift,
+            }
     return render(request, 'RU_SURE.html', context)
 
 
