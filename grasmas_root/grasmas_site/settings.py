@@ -26,7 +26,7 @@ SECRET_KEY = 'qzmu8@mi48h=i$&thvpcq-z9i)b@9l^kyu!5y(21#h($khv660'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['grasmas.com']
 
 
 # Application definition
@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'grasmas_site.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'grasmas',
+	'USER': 'guser',
+	'PASSWORD': 'TheLamp',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
