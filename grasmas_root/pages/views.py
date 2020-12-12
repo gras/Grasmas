@@ -10,8 +10,11 @@ gift_display = []
 # players is the list of players
 players = []
 
-# lamp_player is the lucky person to win the lamp
+# lamp_player is the lucky person that is GOING TO win the lamp
 lamp_player = ''
+
+# lamp_winner is the lucky person that HAS won the lamp
+lamp_winner = ''
 
 # lamp_URL is the location of the lamp picture
 lamp_URL = ''
@@ -32,7 +35,7 @@ num_trades = 0
 def start(request):
     from random import randrange, shuffle
 
-    global gift_display, players, lamp_player, curr_player, next_player, lamp_player
+    global gift_display, players, lamp_player, lamp_winner, curr_player, next_player, last_player, num_trades, lamp_URL
 
     # size of the grid
     cols = 6
@@ -49,7 +52,8 @@ def start(request):
 
     # pull the gifts from the database
     gift_list = Gift.objects.exclude(giver='Lamp')
-
+    lamp = Gift.objects.filter(giver='Lamp')
+    lamp_URL = lamp[0].photo
     # randomly place the gifts in the grid
     for gift_data in gift_list:
         r = randrange(rows - 1) + 1
@@ -74,6 +78,9 @@ def start(request):
 
     shuffle(players)
     lamp_player = players[0]
+    if lamp_player == 'Mark_R':
+        lamp_player = players[1]
+    lamp_winner = ''
     shuffle(players)
     next_player = 0
     curr_player = players[0]
@@ -82,13 +89,16 @@ def start(request):
         'rows': gift_display,
         'msgs': msgs,
         'players': players,
+        'curr_player': curr_player,
+        'lamp_winner': lamp_winner,
+        'lamp_URL': lamp_URL,
     }
     # assert False
     return render(request, 'board.html', context)
 
 
 def present(request, position):
-    global gift_display, players, lamp_player, curr_player, next_player, last_player, num_trades, lamp_URL
+    global gift_display, players, lamp_player, lamp_winner, curr_player, next_player, last_player, num_trades, lamp_URL
 
     c = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
     r = int(position[1])
@@ -99,10 +109,12 @@ def present(request, position):
         result = "!!! WINNER !!!"
         g = {'title': "{}".format(curr_player),
              'desc': 'WON THE LAMP',
-             'image': 'lamp',
+             'photo': lamp_URL,
              }
         lamp_player = ''
+        lamp_winner = curr_player
     else:
+        # stealing an open gift
         new_owner = curr_player
         if 'owner' in g:
             old_owner = g["owner"]
@@ -111,23 +123,25 @@ def present(request, position):
             print("last_player", last_player)
             print("new_owner", new_owner)
             print("old_owner", old_owner)
+            print("num_trades", num_trades)
 
-            if old_owner == last_player:
+            if num_trades > 0 and old_owner == last_player:
                 result = "*** ILLEGAL *** {} tried to take back {}'s".format(new_owner, old_owner)
                 # curr_player = new_owner
                 # new_owner = old_owner
             else:
-                if num_trades < 6:
-                    result = "Do you want to steal {}'s".format(old_owner)
+                if num_trades < 4:
+                    result = "{} do you want to steal {}'s".format(new_owner, old_owner)
                     stealing = True
                     # curr_player = old_owner
                     # last_player = new_owner
                     # num_trades += 1
                 else:
-                    result = "!!! JUST STOP !!!  Pick an wrapped gift.  You can't have the"
+                    result = "{} !!! JUST STOP !!!  You can't have {}'s".format(new_owner, old_owner)
                     # curr_player = new_owner
                     # new_owner = old_owner
         else:
+            # opening a wrapped gift
             result = "{} unwrapped the".format(curr_player)
             next_player += 1
             num_trades = 0
@@ -145,18 +159,23 @@ def present(request, position):
         'message': result,
         'stealing': stealing,
         'players': players,
+        'lamp_winner': lamp_winner,
+        'lamp_URL': lamp_URL,
     }
     return render(request, 'gift.html', context)
 
 
 def board(request):
-    global gift_display, curr_player, next_player, last_player
+    global gift_display, players, lamp_player, lamp_winner, curr_player, next_player, last_player, num_trades, lamp_URL
 
     msgs = ["{}'s turn What gift do you choose?".format(curr_player)]
     context = {
         'rows': gift_display,
         'msgs': msgs,
         'players': players,
+        'curr_player': curr_player,
+        'lamp_winner': lamp_winner,
+        'lamp_URL': lamp_URL,
     }
     # assert False
     print("curr_player", curr_player)
@@ -165,7 +184,7 @@ def board(request):
 
 
 def steal(request, position):
-    global gift_display, curr_player, last_player, num_trades
+    global gift_display, players, lamp_player, lamp_winner, curr_player, next_player, last_player, num_trades, lamp_URL
 
     c = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
     r = int(position[1])
