@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block content %}
+<div class="container border">
+    <div class="row">
+      <div class="col-sm-9">
+        <h2>Hello, {{ user.username|default:'Guest' }}!</h2>
+        <h3>There are {{ gl_all }} gifts in the database {{ lamp_msg }}</h3>
+      </div>
+    </div>
+
+    <div>
+        <ul>
+        {% for row in rows %}
+        <li>{{ row }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        {% if errors %}
+        <h2 style="color:red">Duplicate gifts entered for: {{ errors }}</h2>
+        {% endif %}
+    </div>
+
+     <div class="text-center">
+        {% if user.is_authenticated %}
+            <a href="{% url 'show' %}" class="btn btn-primary">Add/Update Gifts</a>
+            <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+        {% endif %}
+     </div>
+</div>
+{% endblock %}
+

@@ -14,12 +14,9 @@
     <h1>{{ gift.title }}</h1>
     <img src={{ gift.photo }} alt="{{ gift.display }}" style="width:600px;height:600px;">
     <h2>{{ gift.desc }}</h2>
-    {% if stealing %}
-      <a href="/board" class="btn btn-danger">Don't steal</a>
-      <a href="/steal/{{ gift.location }}" class="btn btn-success">Steal it !!!</a>
-    {% else %}
-      <a href="/board" class="btn btn-primary">Continue</a>
-    {% endif %}
+    <a href="/board" class="btn btn-success">Steal</a>
+    <a href="/board" class="btn btn-danger">No Steal</a>
+
   {% else %}
      <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
   {% endif %}
