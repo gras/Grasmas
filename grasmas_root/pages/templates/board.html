@@ -6,10 +6,18 @@
 
 {% block content %}
   {% if user.is_superuser %}
-<div style="text-center"></div>
+<div class="row">
+<div class="col-lg-3">
+<p>{{ players }}</p>
+</div>
+
+<div class="col-lg-6">
+
+<div class="text-center">
     {% for msg in msgs %}
 <p><strong>{{ msg }}</strong></p>
     {% endfor msg %}
+</div>
 <table style="width:100%">
     {% for row in rows %}
     <tr>
@@ -29,20 +37,24 @@
             <a href="/present/{{ gift.location }}">
               <img src="/static/boxes/{{ gift.color }}.png"
                    alt="{{ gift.display }}"
-                   style="width:100px;height:100px;"
+                   style="width:150px;height:150px;"
                    class="img-responsive"
               >
             </a>
           {% endif %}
         {% else %}
-          <strong>{{ gift.display }}</strong>
+          <h2>{{ gift.display }}</h2>
         {% endif %}
       </td>
     {% endfor gift %}
     </tr>
     {% endfor row %}
 </table>
-<p>{{ players }}</p>
+</div>
+</div>
+<div clas="col-lg-3">
+
+</div>
 </div>
     {% else %}
         <a href="{% url 'login' %}" class="btn btn-primary">Login</a>

@@ -84,7 +84,7 @@ def start(request):
         'players': players,
     }
     # assert False
-    return render(request, 'page.html', context)
+    return render(request, 'board.html', context)
 
 
 def present(request, position):
@@ -106,6 +106,12 @@ def present(request, position):
         new_owner = curr_player
         if 'owner' in g:
             old_owner = g["owner"]
+
+            print("curr_player", curr_player)
+            print("last_player", last_player)
+            print("new_owner", new_owner)
+            print("old_owner", old_owner)
+
             if old_owner == last_player:
                 result = "*** ILLEGAL *** {} tried to take back {}'s".format(new_owner, old_owner)
                 # curr_player = new_owner
@@ -129,6 +135,7 @@ def present(request, position):
             gift_display[r][c]["owner"] = curr_player
             gift_display[r][c]["display"] = "{}'s {}".format(curr_player, g["title"])
             if next_player < len(players):
+                last_player = curr_player
                 curr_player = players[next_player]
             else:
                 curr_player = "EndOfRound"
@@ -143,7 +150,7 @@ def present(request, position):
 
 
 def board(request):
-    global gift_display, curr_player
+    global gift_display, curr_player, next_player, last_player
 
     msgs = ["{}'s turn What gift do you choose?".format(curr_player)]
     context = {
@@ -152,7 +159,9 @@ def board(request):
         'players': players,
     }
     # assert False
-    return render(request, 'page.html', context)
+    print("curr_player", curr_player)
+    print("last_player", last_player)
+    return render(request, 'board.html', context)
 
 
 def steal(request, position):
