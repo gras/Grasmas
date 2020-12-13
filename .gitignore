@@ -134,3 +134,5 @@ dmypy.json
 # media files
 grasmas_root/media/
 grasmas_root/staticfiles/
+
+.bash_history
