@@ -9,6 +9,6 @@ class GiftForm(forms.ModelForm):
         labels = {
             'giver': 'The person giving the gift',
             'title': 'Short title for the gift (max 30 characters)',
-            'desc': 'Short title for the gift (max 120 characters)',
+            'desc': 'Longer gift description (max 120 characters)',
             'image': 'URL for the gift image',
         }
