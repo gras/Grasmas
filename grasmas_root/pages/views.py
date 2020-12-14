@@ -49,7 +49,6 @@ def start(request):
     for i, c in enumerate(columns):
         gift_display[0][i] = {"display": c}
     players = []
-
     # pull the gifts from the database
     gift_list = Gift.objects.exclude(giver='Lamp')
     lamp = Gift.objects.filter(giver='Lamp')
@@ -93,7 +92,6 @@ def start(request):
         'lamp_winner': lamp_winner,
         'lamp_URL': lamp_URL,
     }
-    # assert False
     return render(request, 'board.html', context)
 
 
@@ -177,7 +175,6 @@ def board(request):
         'lamp_winner': lamp_winner,
         'lamp_URL': lamp_URL,
     }
-    # assert False
     print("curr_player", curr_player)
     print("last_player", last_player)
     return render(request, 'board.html', context)
