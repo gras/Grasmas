@@ -53,6 +53,8 @@ def start(request):
     lamp = Gift.objects.filter(giver='Lamp')
     lamp_URL = lamp[0].photo
     # randomly place the gifts in the grid
+    # c = 0
+    # r = 0
     for gift_data in gift_list:
         r = randrange(rows - 1) + 1
         c = randrange(cols - 1) + 1
@@ -73,7 +75,6 @@ def start(request):
                               }
         # add each player to the players list
         players.append(gift_data.giver)
-    print(gift_display[r][c])
     shuffle(players)
     lamp_player = players[0]
     if lamp_player == 'Mark_R':
@@ -121,6 +122,7 @@ def present(request, position):
     r = int(position[1])
     g = gift_display[r][c]
 
+    end_of_round_names = ['EndOfRound1', 'EndOfFinalRound']
     stealing = False
     if curr_player == lamp_player:
         result = "!!! WINNER !!!"
@@ -135,19 +137,15 @@ def present(request, position):
         new_owner = curr_player
         if 'owner' in g:
             old_owner = g["owner"]
-
-            print("curr_player", curr_player)
-            print("last_player", last_player)
-            print("new_owner", new_owner)
-            print("old_owner", old_owner)
-            print("num_trades", num_trades)
-
             if num_trades > 0 and old_owner == last_player:
                 result = "*** ILLEGAL *** {} tried to take back {}'s".format(new_owner, old_owner)
             else:
                 if num_trades < 4:
-                    result = "{} do you want to steal {}'s".format(new_owner, old_owner)
-                    stealing = True
+                    if curr_player in end_of_round_names:
+                        result = "{}'s".format(old_owner)
+                    else:
+                        result = "{} do you want to steal {}'s".format(new_owner, old_owner)
+                        stealing = True
                 else:
                     result = "{} !!! JUST STOP !!!  You can't have {}'s".format(new_owner, old_owner)
         else:
@@ -162,7 +160,7 @@ def present(request, position):
                 last_player = curr_player
                 curr_player = players[next_player]
             else:
-                curr_player = "EndOfRound"
+                curr_player = "EndOfRound1"
 
     context = {
         'gift': g,
@@ -195,7 +193,13 @@ def board(request):
     num_trades = request.session.get('num_trades')
     lamp_URL = request.session.get('lamp_URL')
 
-    msgs = ["{}'s turn What gift do you choose?".format(curr_player)]
+    if curr_player == "EndOfRound1":
+        msgs = ["---  Time to review the gifts!  ---"]
+    elif curr_player == "EndOfFinalRound":
+        msgs = ["***  !!! MERRY GRASMAS !!!  ***"]
+    else:
+        msgs = ["{}'s turn What gift do you choose?".format(curr_player)]
+
     context = {
         'rows': gift_display,
         'msgs': msgs,
@@ -213,7 +217,6 @@ def board(request):
     request.session['last_player'] = last_player
     request.session['num_trades'] = num_trades
     request.session['lamp_URL'] = lamp_URL
-
     return render(request, 'board.html', context)
 
 
@@ -228,20 +231,40 @@ def steal(request, position):
     num_trades = request.session.get('num_trades')
     lamp_URL = request.session.get('lamp_URL')
 
-    c = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
-    r = int(position[1])
-    g = gift_display[r][c]
+    c_new = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
+    r_new = int(position[1])
+    g_new = gift_display[r_new][c_new]
 
-    new_owner = curr_player
-    curr_player = g["owner"]
-    last_player = new_owner
-    num_trades += 1
-    print("curr_player", curr_player)
-    print("last_player", last_player)
-    print("new_owner", new_owner)
+    if last_player == 'FinalRound':
+        r_old = -1
+        c_old = -1
+        for r in range(6):
+            for c in range(6):
+                if 'owner' in gift_display[r][c]:
+                    if gift_display[r][c]['owner'] == curr_player:
+                        r_old = r
+                        c_old = c
+        old_owner = gift_display[r_new][c_new]['owner']
+        old_title = gift_display[r_old][c_old]["title"]
+        new_owner = curr_player
+        gift_display[r_old][c_old]["owner"] = old_owner
+        gift_display[r_old][c_old]["display"] = "{}'s {}".format(old_owner, old_title)
+        num_trades = 0
+        next_player -= 1
+        if next_player >= 0:
+            curr_player = players[next_player]
+        else:
+            curr_player = "EndOfFinalRound"
+    else:
+        # first round
+        new_owner = curr_player
+        curr_player = g_new["owner"]
+        last_player = new_owner
+        num_trades += 1
 
-    gift_display[r][c]["owner"] = new_owner
-    gift_display[r][c]["display"] = "{}'s {}".format(new_owner, g["title"])
+    gift_display[r_new][c_new]["owner"] = new_owner
+    gift_display[r_new][c_new]["display"] = "{}'s {}".format(new_owner, g_new["title"])
+
     request.session['gift_display'] = gift_display
     request.session['players'] = players
     request.session['lamp_player'] = lamp_player
@@ -252,3 +275,38 @@ def steal(request, position):
     request.session['num_trades'] = num_trades
     request.session['lamp_URL'] = lamp_URL
     return redirect('board')
+
+
+def final(request):
+    gift_display = request.session.get('gift_display')
+    players = request.session.get('players')
+    lamp_player = request.session.get('lamp_player')
+    lamp_winner = request.session.get('lamp_winner')
+    curr_player = request.session.get('curr_player')
+    next_player = request.session.get('next_player')
+    last_player = request.session.get('last_player')
+    num_trades = request.session.get('num_trades')
+    lamp_URL = request.session.get('lamp_URL')
+
+    last_player = 'FinalRound'
+    next_player = len(players) - 1
+    curr_player = players[next_player]
+    msgs = ["{} goes first!!  Which gift do you choose?".format(curr_player)]
+    context = {
+        'rows': gift_display,
+        'msgs': msgs,
+        'players': players,
+        'curr_player': curr_player,
+        'lamp_winner': lamp_winner,
+        'lamp_URL': lamp_URL,
+    }
+    request.session['gift_display'] = gift_display
+    request.session['players'] = players
+    request.session['lamp_player'] = lamp_player
+    request.session['lamp_winner'] = lamp_winner
+    request.session['curr_player'] = curr_player
+    request.session['next_player'] = next_player
+    request.session['last_player'] = last_player
+    request.session['num_trades'] = num_trades
+    request.session['lamp_URL'] = lamp_URL
+    return render(request, 'board.html', context)

@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}
-{{ title }}
-{% endblock title %}
-
 {% block content %}
   {% if user.is_superuser %}
 <div class="row">
@@ -76,6 +72,11 @@
          alt="Da LAMP"
          style="width:300px;height:300px;"
          class="img-responsive">
+    {% endif %}
+    {% if curr_player == "EndOfRound1" %}
+      <p>
+          <br><a href="{% url 'final' %}" class="btn btn-success">Start Final Round</a>
+      </p>
     {% endif %}
 </div>
 </div>
