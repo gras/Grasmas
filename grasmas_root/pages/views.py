@@ -69,12 +69,12 @@ def start(request):
                               "title": gift_data.title,
                               "desc": gift_data.desc,
                               "color": gift_data.color,
-                              "photo": gift_data.photo,
+                              "photo": str(gift_data.photo),
                               "location": gift_loc,
                               }
         # add each player to the players list
         players.append(gift_data.giver)
-
+    print(gift_display[r][c])
     shuffle(players)
     lamp_player = players[0]
     if lamp_player == 'Mark_R':
@@ -102,7 +102,7 @@ def start(request):
     request.session['next_player'] = next_player
     request.session['last_player'] = last_player
     request.session['num_trades'] = num_trades
-    request.session['lamp_URL'] = lamp_URL
+    request.session['lamp_URL'] = str(lamp_URL)
     return render(request, 'board.html', context)
 
 
@@ -144,8 +144,6 @@ def present(request, position):
 
             if num_trades > 0 and old_owner == last_player:
                 result = "*** ILLEGAL *** {} tried to take back {}'s".format(new_owner, old_owner)
-                # curr_player = new_owner
-                # new_owner = old_owner
             else:
                 if num_trades < 4:
                     result = "{} do you want to steal {}'s".format(new_owner, old_owner)
