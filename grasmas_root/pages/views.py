@@ -1,42 +1,41 @@
 from django.shortcuts import render, redirect
 from . models import Gift
 
-# global variables
-
-# gift_display is the data behind the display board
-# it is a list of lists (for row, col) containing a list of
-gift_display = []
-
-# players is the list of players
-players = []
-
-# lamp_player is the lucky person that is GOING TO win the lamp
-lamp_player = ''
-
-# lamp_winner is the lucky person that HAS won the lamp
-lamp_winner = ''
-
-# lamp_URL is the location of the lamp picture
-lamp_URL = ''
-
-# last_player is the player that opened the last gift
-last_player = ''
-
-# curr_player is the player selecting a gift
-curr_player = ''
-
-# next_player is the index of player to open the next gift
-next_player = 0
-
-# num_trades keeps track of how many trades occur in one turn
-num_trades = 0
-
 
 def start(request):
     from random import randrange, shuffle
 
-    global gift_display, players, lamp_player, lamp_winner, curr_player, next_player, last_player, num_trades, lamp_URL
-
+    '''
+    These are the session data elements
+    
+    gift_display is the data behind the display board
+    it is a list of lists (for row, col) containing a list of
+    gift_display = []
+    
+    players is the list of players
+    players = []
+    
+    lamp_player is the lucky person that is GOING TO win the lamp
+    lamp_player = ''
+    
+    lamp_winner is the lucky person that HAS won the lamp
+    lamp_winner = ''
+    
+    lamp_URL is the location of the lamp picture
+    lamp_URL = ''
+    
+    last_player is the player that opened the last gift
+    last_player = ''
+    
+    curr_player is the player selecting a gift
+    curr_player = ''
+    
+    next_player is the index of player to open the next gift
+    next_player = 0
+    
+    num_trades keeps track of how many trades occur in one turn
+    num_trades = 0
+    '''
     # size of the grid
     cols = 6
     rows = 6
@@ -84,6 +83,8 @@ def start(request):
     shuffle(players)
     next_player = 0
     curr_player = players[0]
+    last_player = ''
+    num_trades = 0
     msgs = ["{} goes first!!  Which wrapped gift do you choose?".format(curr_player)]
     context = {
         'rows': gift_display,
@@ -93,12 +94,28 @@ def start(request):
         'lamp_winner': lamp_winner,
         'lamp_URL': lamp_URL,
     }
-    # assert False
+    request.session['gift_display'] = gift_display
+    request.session['players'] = players
+    request.session['lamp_player'] = lamp_player
+    request.session['lamp_winner'] = lamp_winner
+    request.session['curr_player'] = curr_player
+    request.session['next_player'] = next_player
+    request.session['last_player'] = last_player
+    request.session['num_trades'] = num_trades
+    request.session['lamp_URL'] = lamp_URL
     return render(request, 'board.html', context)
 
 
 def present(request, position):
-    global gift_display, players, lamp_player, lamp_winner, curr_player, next_player, last_player, num_trades, lamp_URL
+    gift_display = request.session.get('gift_display')
+    players = request.session.get('players')
+    lamp_player = request.session.get('lamp_player')
+    lamp_winner = request.session.get('lamp_winner')
+    curr_player = request.session.get('curr_player')
+    next_player = request.session.get('next_player')
+    last_player = request.session.get('last_player')
+    num_trades = request.session.get('num_trades')
+    lamp_URL = request.session.get('lamp_URL')
 
     c = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
     r = int(position[1])
@@ -133,13 +150,8 @@ def present(request, position):
                 if num_trades < 4:
                     result = "{} do you want to steal {}'s".format(new_owner, old_owner)
                     stealing = True
-                    # curr_player = old_owner
-                    # last_player = new_owner
-                    # num_trades += 1
                 else:
                     result = "{} !!! JUST STOP !!!  You can't have {}'s".format(new_owner, old_owner)
-                    # curr_player = new_owner
-                    # new_owner = old_owner
         else:
             # opening a wrapped gift
             result = "{} unwrapped the".format(curr_player)
@@ -162,11 +174,28 @@ def present(request, position):
         'lamp_winner': lamp_winner,
         'lamp_URL': lamp_URL,
     }
+    request.session['gift_display'] = gift_display
+    request.session['players'] = players
+    request.session['lamp_player'] = lamp_player
+    request.session['lamp_winner'] = lamp_winner
+    request.session['curr_player'] = curr_player
+    request.session['next_player'] = next_player
+    request.session['last_player'] = last_player
+    request.session['num_trades'] = num_trades
+    request.session['lamp_URL'] = lamp_URL
     return render(request, 'gift.html', context)
 
 
 def board(request):
-    global gift_display, players, lamp_player, lamp_winner, curr_player, next_player, last_player, num_trades, lamp_URL
+    gift_display = request.session.get('gift_display')
+    players = request.session.get('players')
+    lamp_player = request.session.get('lamp_player')
+    lamp_winner = request.session.get('lamp_winner')
+    curr_player = request.session.get('curr_player')
+    next_player = request.session.get('next_player')
+    last_player = request.session.get('last_player')
+    num_trades = request.session.get('num_trades')
+    lamp_URL = request.session.get('lamp_URL')
 
     msgs = ["{}'s turn What gift do you choose?".format(curr_player)]
     context = {
@@ -177,14 +206,28 @@ def board(request):
         'lamp_winner': lamp_winner,
         'lamp_URL': lamp_URL,
     }
-    # assert False
-    print("curr_player", curr_player)
-    print("last_player", last_player)
+    request.session['gift_display'] = gift_display
+    request.session['players'] = players
+    request.session['lamp_player'] = lamp_player
+    request.session['lamp_winner'] = lamp_winner
+    request.session['curr_player'] = curr_player
+    request.session['next_player'] = next_player
+    request.session['last_player'] = last_player
+    request.session['num_trades'] = num_trades
+    request.session['lamp_URL'] = lamp_URL
     return render(request, 'board.html', context)
 
 
 def steal(request, position):
-    global gift_display, players, lamp_player, lamp_winner, curr_player, next_player, last_player, num_trades, lamp_URL
+    gift_display = request.session.get('gift_display')
+    players = request.session.get('players')
+    lamp_player = request.session.get('lamp_player')
+    lamp_winner = request.session.get('lamp_winner')
+    curr_player = request.session.get('curr_player')
+    next_player = request.session.get('next_player')
+    last_player = request.session.get('last_player')
+    num_trades = request.session.get('num_trades')
+    lamp_URL = request.session.get('lamp_URL')
 
     c = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
     r = int(position[1])
@@ -200,4 +243,13 @@ def steal(request, position):
 
     gift_display[r][c]["owner"] = new_owner
     gift_display[r][c]["display"] = "{}'s {}".format(new_owner, g["title"])
+    request.session['gift_display'] = gift_display
+    request.session['players'] = players
+    request.session['lamp_player'] = lamp_player
+    request.session['lamp_winner'] = lamp_winner
+    request.session['curr_player'] = curr_player
+    request.session['next_player'] = next_player
+    request.session['last_player'] = last_player
+    request.session['num_trades'] = num_trades
+    request.session['lamp_URL'] = lamp_URL
     return redirect('board')
