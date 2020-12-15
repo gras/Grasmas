@@ -163,3 +163,7 @@ def delete(request, pk):
         gift = Gift.objects.get(pk=pk)
         gift.delete()
     return redirect('show')
+
+
+def maintenance(request):
+    return render(request, 'IN_WORK.html')
