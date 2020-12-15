@@ -48,7 +48,6 @@ def start(request):
     for i, c in enumerate(columns):
         gift_display[0][i] = {"display": c}
     players = []
-
     # pull the gifts from the database
     gift_list = Gift.objects.exclude(giver='Lamp')
     lamp = Gift.objects.filter(giver='Lamp')
@@ -103,6 +102,7 @@ def start(request):
     request.session['last_player'] = last_player
     request.session['num_trades'] = num_trades
     request.session['lamp_URL'] = str(lamp_URL)
+
     return render(request, 'board.html', context)
 
 
@@ -213,6 +213,7 @@ def board(request):
     request.session['last_player'] = last_player
     request.session['num_trades'] = num_trades
     request.session['lamp_URL'] = lamp_URL
+
     return render(request, 'board.html', context)
 
 
