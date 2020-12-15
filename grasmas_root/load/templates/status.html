@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}
-{{ title }}
-{% endblock title %}
-
 {% block content %}
 <div class="container border">
     <div class="row">
@@ -11,6 +7,12 @@
         <h2>Hello, {{ user.username|default:'Guest' }}!</h2>
         <h3>There are {{ gl_all }} gifts in the database {{ lamp_msg }}</h3>
       </div>
+      {% if user.is_authenticated %}
+      <div class="col-sm-3">
+        <b>Your wrapping paper: </b>
+        <img src="/static/boxes/{{ user.last_name }}.png" style="width:100px; height:100px; ">
+      </div>
+      {% endif %}
     </div>
 
     <div>
