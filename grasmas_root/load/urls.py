@@ -13,6 +13,7 @@ urlpatterns = [
     path('show/', show, name='show'),
     path('status/', status, name='status'),
     path('add_lamp/', add_lamp, name='add_lamp'),
+    path('preview/<int:pk>/', preview, name='preview'),
 ]
 
 if settings.DEBUG:

@@ -10,6 +10,7 @@
         {{ form.as_p }}
         <input type="file" name="myfile">
         <button type="submit" class="btn btn-primary">Upload</button>
+        <a href="{% url 'show' %}" class="btn btn-warning">Cancel</a>
      </form>
         {% if url %}
         <p>File uploaded at: <a href="{{ url }}">{{ url }}</a></p>

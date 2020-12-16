@@ -43,6 +43,10 @@
                                      src="{{ gift.photo }}">
         </td>
         <td class="text-center">
+            <form method="get" action="{% url 'preview' gift.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success btn-sm">Preview</button>
+            </form>
             <form method="get" action="{% url 'edit' gift.pk %}">
               {% csrf_token %}
               <button type="submit" class="btn btn-primary btn-sm">Edit</button>

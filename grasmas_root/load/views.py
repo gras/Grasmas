@@ -165,5 +165,15 @@ def delete(request, pk):
     return redirect('show')
 
 
+def preview(request, pk):
+    g = Gift.objects.get(pk=pk)
+    result = "Preview of the display for {}'s".format(g.giver)
+    context = {
+        'gift': g,
+        'message': result,
+    }
+    return render(request, 'preview.html', context)
+
+
 def maintenance(request):
     return render(request, 'IN_WORK.html')
