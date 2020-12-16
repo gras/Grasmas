@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-lg-4 offset-lg-4 text-center">
+    <h2>{{ message }}</h2>
+    <h1>{{ gift.title }}</h1>
+    <img class="d-block m-auto" src={{ gift.photo }} alt="{{ gift.display }}" style="width:600px;height:600px;">
+    <h2>{{ gift.desc }}</h2>
+    <a href="/show" class="btn btn-primary">Continue</a>
+</div>
+{% endblock %}
