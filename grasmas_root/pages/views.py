@@ -37,15 +37,16 @@ def start(request):
     num_trades = 0
     '''
     # size of the grid
-    cols = 6
+    column_header = [' ', 'H', 'O', 'L', 'I', 'D', 'A', 'Y']
+    cols = len(column_header)
     rows = 6
+    print('rows:', rows, 'cols', cols)
     gift_display = [[{} for _ in range(cols)] for _ in range(rows)]
     # add the row numbers
     for i in range(rows):
         gift_display[i][0] = {"display": i}
     # add the column headers
-    columns = [' ', 'G', 'R', 'A', 'S', 'M']
-    for i, c in enumerate(columns):
+    for i, c in enumerate(column_header):
         gift_display[0][i] = {"display": c}
     players = []
     # pull the gifts from the database
@@ -53,8 +54,6 @@ def start(request):
     lamp = Gift.objects.filter(giver='Lamp')
     lamp_URL = lamp[0].photo
     # randomly place the gifts in the grid
-    # c = 0
-    # r = 0
     for gift_data in gift_list:
         r = randrange(rows - 1) + 1
         c = randrange(cols - 1) + 1
@@ -63,7 +62,7 @@ def start(request):
             c = randrange(cols - 1) + 1
 
         # gift_loc is a string location as a pair of characters (i.e. "M4")
-        gift_loc = "{}{}".format(columns[c], r)
+        gift_loc = "{}{}".format(column_header[c], r)
 
         gift_display[r][c] = {"display": "wrapped gift",
                               "giver": gift_data.giver,
@@ -93,6 +92,7 @@ def start(request):
         'curr_player': curr_player,
         'lamp_winner': lamp_winner,
         'lamp_URL': lamp_URL,
+        'column_header': column_header
     }
     request.session['gift_display'] = gift_display
     request.session['players'] = players
@@ -103,6 +103,7 @@ def start(request):
     request.session['last_player'] = last_player
     request.session['num_trades'] = num_trades
     request.session['lamp_URL'] = str(lamp_URL)
+    request.session['column_header'] = column_header
 
     return render(request, 'board.html', context)
 
@@ -117,8 +118,9 @@ def present(request, position):
     last_player = request.session.get('last_player')
     num_trades = request.session.get('num_trades')
     lamp_URL = request.session.get('lamp_URL')
+    column_header = request.session.get('column_header')
 
-    c = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
+    c = column_header.index(position[0])
     r = int(position[1])
     g = gift_display[r][c]
 
@@ -179,6 +181,7 @@ def present(request, position):
     request.session['last_player'] = last_player
     request.session['num_trades'] = num_trades
     request.session['lamp_URL'] = lamp_URL
+    request.session['column_header'] = column_header
     return render(request, 'gift.html', context)
 
 
@@ -230,8 +233,9 @@ def steal(request, position):
     last_player = request.session.get('last_player')
     num_trades = request.session.get('num_trades')
     lamp_URL = request.session.get('lamp_URL')
+    column_header = request.session.get('column_header')
 
-    c_new = [' ', 'G', 'R', 'A', 'S', 'M'].index(position[0])
+    c_new = column_header.index(position[0])
     r_new = int(position[1])
     g_new = gift_display[r_new][c_new]
 
