@@ -2,83 +2,84 @@
 
 {% block content %}
   {% if user.is_superuser %}
-<div class="row">
-<div class="col-lg-1 text-center">
-</div>
-<div class="col-lg-2 text-left">
-    <p><strong>Player order:</strong></p>
-    <ul>
-    {% for player in players %}
-        {% if player == curr_player %}
-        <li><h3><strong>{{ player }}</strong></h3></li>
-        {% else %}
-        <li><h5>{{ player }}</h5></li>
-        {% endif %}
-    {% endfor %}
-    </ul>
-</div>
+<div class="container-fluid">
+    <div class="row">
 
-<div class="col-lg-6">
+        <div class="col-lg-2 text-left">
+            <p><strong>Player order:</strong></p>
+            <ul>
+            {% for player in players %}
+                {% if player == curr_player %}
+                <li><h3><strong>{{ player }}</strong></h3></li>
+                {% else %}
+                <li><h5>{{ player }}</h5></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </div>
 
-<div class="text-center">
-    {% for msg in msgs %}
-<p><strong>{{ msg }}</strong></p>
-    {% endfor msg %}
-</div>
-<table style="width:100%">
-    {% for row in rows %}
-    <tr>
-    {% for gift in row %}
-      <td class="text-center">
-        {% if gift.location %}
-          {% if gift.open %}
-          <div><strong>{{ gift.owner }}'s</strong></div>
-            <a href="/present/{{ gift.location }}">
-              <img src={{ gift.photo }}
-                   alt="{{ gift.display }}"
-                   style="width:150px;height:130px;"
-                   class="img-responsive"
-              >
-            </a>
-          {% else %}
-            <a href="/present/{{ gift.location }}">
-              <img src="/static/boxes/{{ gift.color }}.png"
-                   alt="{{ gift.display }}"
-                   style="width:150px;height:150px;"
-                   class="img-responsive"
-              >
-            </a>
-          {% endif %}
-        {% elif gift.display %}
-          <h2>{{ gift.display }}</h2>
-          {% else %}
-            <img src="/static/boxes/MT.png"
-                 style="width:150px;height:150px;"
-                 class="img-responsive"
-            >
-          {% endif %}
-      </td>
-    {% endfor gift %}
-    </tr>
-    {% endfor row %}
-</table>
-</div>
+        <div class="col-lg-8">
 
-<div class="col-lg-3 text-center">
-  {% if lamp_winner %}
-    <h1>{{ lamp_winner }}</h1>
-    <h2>!!! WON THE LAMP !!!</h2>
-    <img src={{ lamp_URL }}
-         alt="Da LAMP"
-         style="width:300px;height:300px;"
-         class="img-responsive">
-    {% endif %}
-    {% if curr_player == "EndOfRound1" %}
-      <p>
-          <br><a href="{% url 'final' %}" class="btn btn-success">Start Final Round</a>
-      </p>
-    {% endif %}
-</div>
+            <div class="text-center">
+                {% for msg in msgs %}
+            <p><strong>{{ msg }}</strong></p>
+                {% endfor msg %}
+            </div>
+            <table style="width:100%">
+                {% for row in rows %}
+                <tr>
+                {% for gift in row %}
+                  <td class="text-center">
+                    {% if gift.location %}
+                      {% if gift.open %}
+                      <div><strong>{{ gift.owner }}'s</strong></div>
+                        <a href="/present/{{ gift.location }}">
+                          <img src={{ gift.photo }}
+                               alt="{{ gift.display }}"
+                               style="width:150px;height:130px;"
+                               class="img-responsive"
+                          >
+                        </a>
+                      {% else %}
+                        <a href="/present/{{ gift.location }}">
+                          <img src="/static/boxes/{{ gift.color }}.png"
+                               alt="{{ gift.display }}"
+                               style="width:150px;height:150px;"
+                               class="img-responsive"
+                          >
+                        </a>
+                      {% endif %}
+                    {% elif gift.display %}
+                      <h2>{{ gift.display }}</h2>
+                      {% else %}
+                        <img src="/static/boxes/MT.png"
+                             style="width:150px;height:150px;"
+                             class="img-responsive"
+                        >
+                      {% endif %}
+                  </td>
+                {% endfor gift %}
+                </tr>
+                {% endfor row %}
+            </table>
+            </div>
+
+        <div class="col-lg-2 text-center">
+          {% if lamp_winner %}
+            <h1>{{ lamp_winner }}</h1>
+            <h2>WON THE LAMP !!!</h2>
+            <img src={{ lamp_URL }}
+                 alt="Da LAMP"
+                 style="width:300px;height:300px;"
+                 class="img-responsive">
+            {% endif %}
+            {% if curr_player == "EndOfRound1" %}
+              <p>
+                  <br><a href="{% url 'final' %}" class="btn btn-success">Start Final Round</a>
+              </p>
+            {% endif %}
+        </div>
+    </div>
 </div>
     {% else %}
         <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
